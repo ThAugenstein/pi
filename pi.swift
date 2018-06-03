@@ -9,7 +9,7 @@ func gcd(_ a:UInt32, _ b: UInt32) -> UInt32 {
 
 let start = DispatchTime.now()
 var count = 0
-let max = 100_000_000
+let max = 1_000_000_000
 for _ in (1 ... max) {
     let n1 = arc4random()
     let n2 = arc4random()
