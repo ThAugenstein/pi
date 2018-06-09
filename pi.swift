@@ -4,6 +4,18 @@ import Foundation
 
 typealias UIntType = UInt64
 
+// Start a timer that returns seconds since start as Double
+func startTimer() -> () -> Double {
+    let start = DispatchTime.now()
+    let secondsSinceStart: () -> Double = {
+        let stop = DispatchTime.now()
+        let interval = stop.uptimeNanoseconds - start.uptimeNanoseconds
+        return Double(interval) / 1_000_000_000
+    }
+    return secondsSinceStart
+}
+
+// Xoroshiro number generator as seen on 'Cocoa with love' web site
 struct RandomWordGenerator {
     
     var state: (UIntType, UIntType) = (0, 0)
@@ -32,10 +44,10 @@ func gcd(_ a:UIntType, _ b: UIntType) -> UIntType {
 
 var generator = RandomWordGenerator()
 
-let start = DispatchTime.now()
+let timer = startTimer()
 var count = 0
-let max = 100_000_000
-for _ in (1 ... max) {
+let iterations = 10_000_000
+for _ in (1 ... iterations) {
     let n1 = generator.randomWord()
     let n2 = generator.randomWord()
     if gcd(n1, n2) == 1 {
@@ -43,12 +55,10 @@ for _ in (1 ... max) {
     }
     // print ("\(gcd(n1, n2))")
 }
-var p = Double(count)/Double(max)
+var p = Double(count)/Double(iterations)
 var pi = sqrt(6.0/p)
-let stop = DispatchTime.now()
+let seconds = timer()
 print("my pi ~ \(pi)")
 print("Double.pi = \(Double.pi)")
-let nanoTime = stop.uptimeNanoseconds - start.uptimeNanoseconds
-let timeInterval = Double(nanoTime) / 1_000_000_000
-print("time: \(timeInterval) seconds")
+print("time: \(seconds) seconds")
 
